@@ -1,0 +1,27 @@
+package com.dpl.biomedical.controller;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dpl.biomedical.dto.UserCredentials;
+import com.dpl.biomedical.dto.UserResponse;
+
+@RestController
+public class UserController {
+
+    @PostMapping("/login")
+    public UserResponse login(@RequestBody UserCredentials userCredentials) {
+        String username = userCredentials.getUsername();
+        String password = userCredentials.getPassword();
+
+        // Check if username and password match (you can replace this with your own logic)
+        if ("exampleUser".equals(username) && "examplePassword".equals(password)) {
+            // If matched, create and return a UserResponse object
+            return new UserResponse(1L, "John Doe", "123 Main St");
+        } else {
+            // If not matched, return null or an empty UserResponse object
+            return null;
+        }
+    }
+}

@@ -1,0 +1,55 @@
+package com.dpl.biomedical.service;
+
+
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import java.util.Properties;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+@Service
+public class EmailService {
+	
+	public void sendEmail(String to, String subject, String text) {
+		
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    	
+		String emailHost = getEmailSysConfigValue(ApplicationConstants.EMAIL_HOST);
+		String emailPort = getEmailSysConfigValue(ApplicationConstants.EMAIL_PORT);
+		String emailUsername = getEmailSysConfigValue(ApplicationConstants.EMAIL_USERNAME);
+		String emailPassword = getEmailSysConfigValue(ApplicationConstants.EMAIL_PASSWORD);
+		String emailFrom = getEmailSysConfigValue(ApplicationConstants.EMAIL_FROM);
+		String emailglobalforward = getEmailSysConfigValue(ApplicationConstants.EMAIL_GLOBAL_FORWARD);
+		
+		
+    	mailSender.setHost(emailHost);
+    	mailSender.setPort(Integer.parseInt(emailPort));
+    	mailSender.setUsername(emailUsername);
+    	mailSender.setPassword(emailPassword);
+    	 
+    	Properties properties = new Properties();
+    	properties.setProperty("mail.smtp.auth", "true");
+    	properties.setProperty("mail.smtp.starttls.enable", "true");
+    	 
+    	mailSender.setJavaMailProperties(properties);
+    	
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,
+                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name());
+        if (emailglobalforward != null && !emailglobalforward.trim().isEmpty()) {
+        	helper.setTo(emailglobalforward);
+        	subject = "Email: " + to + " - " + subject; 
+        }else {
+        	helper.setTo(to);
+        }
+        helper.setText(body, true);
+        helper.setSubject(subject);
+        helper.setFrom(emailFrom);
+        mailSender.send(message);
+       
+    }
+
+}

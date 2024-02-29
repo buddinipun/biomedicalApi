@@ -1,0 +1,9 @@
+package com.dpl.biomedical.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.dpl.biomedical.dto.Practice;
+
+public interface PracticeRepository extends JpaRepository<Practice, Long> {
+
+}
